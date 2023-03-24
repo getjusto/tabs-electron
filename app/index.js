@@ -16,8 +16,6 @@ const createWindow = () => {
   };
   const windowsConfig = {
     autoHideMenuBar: true,
-    titleBarStyle: 'hidden',
-    titleBarOverlay: true,
   };
 
   const isMac = process.platform === 'darwin';

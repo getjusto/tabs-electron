@@ -1,6 +1,6 @@
 {
   "name": "justo-crisp",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "license": "MIT",
   "description": "Crisp POS",
   "author": "nicolaslopezj",
@@ -16,13 +16,15 @@
   "build": {
     "productName": "Crisp",
     "appId": "com.getjusto.crisp",
-    "dmg": {
-      "icon": "build/icon.icns",
-      "internetEnabled": true,
+    "mac": {
       "hardenedRuntime": true,
       "gatekeeperAssess": false,
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.plist"
+    },
+    "dmg": {
+      "icon": "build/icon.icns",
+      "internetEnabled": true
     },
     "win": {
       "publish": [
