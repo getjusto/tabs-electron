@@ -1,6 +1,6 @@
 {
   "name": "justo-crisp",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "license": "MIT",
   "description": "Crisp POS",
   "author": "nicolaslopezj",
@@ -10,12 +10,12 @@
     "postinstall": "electron-builder install-app-deps",
     "start": "JUSTO_ENV=local yarn install && electron ./app",
     "pack": "electron-builder --dir",
-    "release": "electron-builder --win --mac",
-    "afterSign": "electron-builder-notarize"
+    "release": "electron-builder --win --mac"
   },
   "build": {
     "productName": "Crisp",
     "appId": "com.getjusto.crisp",
+    "afterSign": "electron-builder-notarize",
     "mac": {
       "hardenedRuntime": true,
       "entitlements": "./node_modules/electron-builder-notarize/entitlements.mac.inherit.plist"
