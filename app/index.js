@@ -8,24 +8,38 @@ const url = isLocal
   : 'https://crisp.getjusto.com';
 
 const createWindow = () => {
-  // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  const macConfig = {
     width: 1100,
     height: 750,
-    show: false,
-    center: true,
     titleBarStyle: 'hidden',
     trafficLightPosition: { x: 10, y: 10 },
+  };
+  const windowsConfig = {
+    autoHideMenuBar: true,
+    titleBarStyle: 'hidden',
+    titleBarOverlay: true,
+  };
+
+  const isMac = process.platform === 'darwin';
+  const config = isMac ? macConfig : windowsConfig;
+
+  // Create the browser window.
+  const mainWindow = new BrowserWindow({
+    show: false,
+    center: true,
+    ...config,
     webPreferences: {
       devTools: true,
       autoplayPolicy: 'no-user-gesture-required',
       allowRunningInsecureContent: true,
     },
-    autoHideMenuBar: true,
   });
 
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
+    if (!isMac) {
+      mainWindow.maximize();
+    }
   });
 
   // and load the index.html of the app.
