@@ -1,4 +1,5 @@
 const { app, BrowserWindow } = require('electron');
+const { autoUpdater } = require('electron-updater');
 
 const isLocal = process.env.JUSTO_ENV === 'local';
 
@@ -32,6 +33,8 @@ const createWindow = () => {
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools();
+
+  autoUpdater.checkForUpdatesAndNotify();
 };
 
 // This method will be called when Electron has finished
