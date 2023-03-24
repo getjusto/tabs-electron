@@ -11,6 +11,7 @@ const createWindow = () => {
   const mainWindow = new BrowserWindow({
     width: 1100,
     height: 750,
+    show: false,
     center: true,
     titleBarStyle: 'hidden',
     trafficLightPosition: { x: 10, y: 10 },
@@ -20,6 +21,10 @@ const createWindow = () => {
       allowRunningInsecureContent: true,
     },
     autoHideMenuBar: true,
+  });
+
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
   });
 
   // and load the index.html of the app.
