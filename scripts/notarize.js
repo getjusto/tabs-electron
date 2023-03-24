@@ -11,6 +11,7 @@ exports.default = async function notarizing(context) {
 
   // Package your app here, and code sign with hardened runtime
   await notarize({
+    appBundleId: 'com.getjusto.crisp',
     tool: 'notarytool',
     appPath: `${appOutDir}/${appName}.app`,
     appleId: process.env.APPLE_ID,
