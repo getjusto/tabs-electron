@@ -4,13 +4,14 @@
   "license": "MIT",
   "description": "Crisp POS",
   "author": "nicolaslopezj",
-  "main": "./app/index.js",
+  "main": "./.build/index.js",
   "repository": "https://github.com/getjusto/tabs-electron",
   "scripts": {
+    "build": "tsc",
     "postinstall": "electron-builder install-app-deps",
-    "start": "JUSTO_ENV=local electron ./app",
-    "pack": "electron-builder --dir",
-    "release": "electron-builder --win --mac"
+    "start": "yarn build && JUSTO_ENV=local electron ./.build",
+    "pack": "yarn build && electron-builder --dir",
+    "release": "yarn build && electron-builder --win --mac"
   },
   "build": {
     "productName": "Crisp",
@@ -33,14 +34,19 @@
     }
   },
   "dependencies": {
+    "bufferutil": "^4.0.7",
+    "electron": "^23.2.0",
+    "electron-builder": "^23.6.0",
     "electron-store": "^8.1.0",
-    "electron-updater": "^5.3.0"
+    "electron-updater": "^5.3.0",
+    "utf-8-validate": "^6.0.3",
+    "ws": "^8.13.0"
   },
   "devDependencies": {
     "@electron/notarize": "^1.2.3",
+    "@types/electron": "^1.6.10",
     "dotenv": "^16.0.3",
-    "electron": "latest",
-    "electron-builder": "latest",
-    "electron-builder-notarize": "^1.5.1"
+    "electron-builder-notarize": "^1.5.1",
+    "typescript": "^5.0.2"
   }
 }

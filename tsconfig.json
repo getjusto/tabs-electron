@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "strict": false,
+    "declaration": true,
+    "removeComments": true,
+    "forceConsistentCasingInFileNames": true,
+    "incremental": true,
+    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "typeRoots": ["./node_modules/@types"],
+    "outDir": "./.build",
+    "rootDir": "./app",
+    "baseUrl": "./",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  },
+  "exclude": ["node_modules", "dist"]
+}
