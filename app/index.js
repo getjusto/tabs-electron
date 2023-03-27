@@ -1,9 +1,12 @@
 const { app, BrowserWindow } = require('electron');
 const { autoUpdater } = require('electron-updater');
+const Store = require('electron-store');
+
+const store = new Store();
 
 const isLocal = process.env.JUSTO_ENV === 'local';
 
-const url = isLocal
+const baseURL = isLocal
   ? 'http://crisp.internal:5140'
   : 'https://crisp.getjusto.com';
 
@@ -40,8 +43,20 @@ const createWindow = () => {
     }
   });
 
+  // saves the window url on close
+  mainWindow.on('close', () => {
+    const latestURL = mainWindow.webContents.getURL();
+    // save latestURL in local storage
+    if (latestURL.startsWith(baseURL)) {
+      store.set('latestURL', latestURL);
+    }
+  });
+
+  const latestURL = store.get('latestURL') || '';
+  const initialURL = latestURL.startsWith(baseURL) ? latestURL : baseURL;
+
   // and load the index.html of the app.
-  mainWindow.loadURL(url);
+  mainWindow.loadURL(initialURL);
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools();
