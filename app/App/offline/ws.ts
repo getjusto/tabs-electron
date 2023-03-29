@@ -37,6 +37,9 @@ wss.on('connection', ws => {
       console.log(`Set token for ws connection to ${token}`)
       Main.mainWindow.webContents.send(`intraSync:onNewConnection`, token)
     }
+    if (data.type === 'ping') {
+      Main.mainWindow.webContents.send(`intraSync:onPing`, token)
+    }
   })
 
   setTimeout(() => {
@@ -70,4 +73,11 @@ export function rejectConnection(token: string) {
 export function getConnectedClientTokens() {
   const values = Array.from(connections.values())
   return values.filter(connection => connection.authenticated).map(connection => connection.token)
+}
+
+export function pong(token: string) {
+  console.log(`Ponging ws connection with token ${token}`)
+  const connection = connections.get(token)
+  if (!connection) return
+  connection.ws.send(JSON.stringify({type: 'pong'}))
 }

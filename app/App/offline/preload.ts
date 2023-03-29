@@ -5,9 +5,15 @@ export const methods = [
   'getDeviceIP',
   'acceptConnection',
   'rejectConnection',
-  'getConnectedClientTokens'
+  'getConnectedClientTokens',
+  'pong'
 ]
-export const events = ['onNewAuthorizationRequest', 'onNewConnection', 'onConnectionClosed']
+export const events = [
+  'onNewAuthorizationRequest',
+  'onNewConnection',
+  'onConnectionClosed',
+  'onPing'
+]
 
 const exposeObj = {}
 

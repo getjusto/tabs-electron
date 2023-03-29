@@ -2,7 +2,7 @@ import {ipcMain} from 'electron'
 import {validateSender} from './validateSender'
 import {getDeviceIP} from './ip'
 import {AuthorizationRequest, respondToRequest} from './initConnection'
-import {acceptConnection, getConnectedClientTokens, rejectConnection} from './ws'
+import {acceptConnection, getConnectedClientTokens, pong, rejectConnection} from './ws'
 
 export interface IntraSyncAPI {
   getDeviceIP: () => Promise<string>
@@ -12,6 +12,8 @@ export interface IntraSyncAPI {
   acceptConnection: (token: string) => void
   rejectConnection: (token: string) => void
   getConnectedClientTokens: () => Promise<string[]>
+  pong: (token: string) => void
+  onPing: (callback: (token: string) => void) => void
   onNewConnection: (callback: (token: string) => void) => void
   onConnectionClosed: (callback: (token: string) => void) => void
 }
@@ -22,6 +24,7 @@ export function registerIntraSync() {
   handleEvent('acceptConnection', acceptConnection)
   handleEvent('rejectConnection', rejectConnection)
   handleEvent('getConnectedClientTokens', getConnectedClientTokens)
+  handleEvent('pong', pong)
 }
 
 function handleEvent(eventName: string, handler: (...args: any[]) => any) {
