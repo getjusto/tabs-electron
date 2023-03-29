@@ -1,7 +1,13 @@
 import {contextBridge, ipcRenderer} from 'electron'
 
-export const methods = ['respondToRequest', 'getDeviceIP']
-export const events = ['onNewAuthorizationRequest']
+export const methods = [
+  'respondToRequest',
+  'getDeviceIP',
+  'acceptConnection',
+  'rejectConnection',
+  'getConnectedClientTokens'
+]
+export const events = ['onNewAuthorizationRequest', 'onNewConnection', 'onConnectionClosed']
 
 const exposeObj = {}
 
