@@ -44,7 +44,7 @@ wss.on('connection', ws => {
     const connection = connections.get(token)
     if (!connection?.authenticated) {
       console.log(`Closing ws connection with due to timeout`)
-      ws.close()
+      ws.close(1000, 'unauthorized')
     }
   }, 5000)
 })
@@ -64,7 +64,7 @@ export function acceptConnection(token: string) {
 export function rejectConnection(token: string) {
   const connection = connections.get(token)
   if (!connection) return
-  connection.ws.close()
+  connection.ws.close(1000, 'unauthorized')
 }
 
 export function getConnectedClientTokens() {
