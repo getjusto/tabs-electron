@@ -40,6 +40,12 @@ wss.on('connection', ws => {
     if (data.type === 'ping') {
       Main.mainWindow.webContents.send(`intraSync:onPing`, token)
     }
+    if (data.type === 'intraSyncMessage') {
+      Main.mainWindow.webContents.send(`intraSync:onIntraSyncMessage`, {
+        token,
+        data: data.data
+      })
+    }
   })
 
   setTimeout(() => {
@@ -80,4 +86,15 @@ export function pong(token: string) {
   const connection = connections.get(token)
   if (!connection) return
   connection.ws.send(JSON.stringify({type: 'pong'}))
+}
+
+export function sendIntraSyncMessage(token: string, data: any) {
+  const connection = connections.get(token)
+  if (!connection) return
+  connection.ws.send(JSON.stringify({type: 'intraSyncMessage', data}))
+}
+
+export function resetAllConnections() {
+  console.log(`Resetting all ws connections`)
+  connections.forEach(connection => connection.ws.close(1000, 'reset'))
 }

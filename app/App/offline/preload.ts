@@ -6,13 +6,16 @@ export const methods = [
   'acceptConnection',
   'rejectConnection',
   'getConnectedClientTokens',
+  'sendIntraSyncMessage',
+  'resetAllConnections',
   'pong'
 ]
 export const events = [
   'onNewAuthorizationRequest',
   'onNewConnection',
   'onConnectionClosed',
-  'onPing'
+  'onPing',
+  'onIntraSyncMessage'
 ]
 
 const exposeObj = {}
