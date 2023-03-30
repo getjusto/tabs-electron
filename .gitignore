@@ -6,3 +6,4 @@ cert.p12
 dist/
 .build/
 tsconfig.tsbuildinfo
+notarization-error.log
