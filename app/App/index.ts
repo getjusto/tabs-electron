@@ -1,15 +1,18 @@
-import {BrowserWindow} from 'electron'
+import {BrowserWindow, powerSaveBlocker} from 'electron'
+import ElectronStore from 'electron-store'
 import {autoUpdater} from 'electron-updater'
 
-import ElectronStore = require('electron-store')
-
 import {baseURL, browserWindowConfig, isMac} from '../env'
+import {registerIntraSync} from './offline/ipc'
+
+import './offline'
 
 const store = new ElectronStore()
 
 export default class Main {
   static mainWindow: Electron.BrowserWindow
   static application: Electron.App
+  static powerSaveBlockerId: number
   static BrowserWindow: typeof BrowserWindow
 
   private static onWindowAllClosed() {
@@ -21,6 +24,7 @@ export default class Main {
   private static onClosed() {
     // Dereference the window object.
     Main.mainWindow = null
+    powerSaveBlocker.stop(Main.powerSaveBlockerId)
   }
 
   private static onActivate() {
@@ -41,9 +45,15 @@ export default class Main {
 
   private static onReadyToShow() {
     Main.mainWindow.show()
+
     if (!isMac) {
       Main.mainWindow.maximize()
     }
+  }
+
+  private static onReady() {
+    Main.createWindow()
+    registerIntraSync()
   }
 
   private static createWindow() {
@@ -55,10 +65,13 @@ export default class Main {
     const latestURL = (store.get('latestURL') || '') as string
     const initialURL = latestURL.startsWith(baseURL) ? latestURL : baseURL
 
-    // and load the index.html of the app.
+    console.log('opening...', initialURL)
+
     Main.mainWindow.loadURL(initialURL)
 
     autoUpdater.checkForUpdatesAndNotify()
+
+    Main.powerSaveBlockerId = powerSaveBlocker.start('prevent-app-suspension')
   }
 
   static main(app: Electron.App, browserWindow: typeof BrowserWindow) {
@@ -69,7 +82,7 @@ export default class Main {
     Main.BrowserWindow = browserWindow
     Main.application = app
     Main.application.on('window-all-closed', Main.onWindowAllClosed)
-    Main.application.on('ready', Main.createWindow)
+    Main.application.on('ready', Main.onReady)
     Main.application.on('activate', Main.onActivate)
   }
 }
