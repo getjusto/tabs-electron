@@ -8,7 +8,8 @@ export const methods = [
   'getConnectedClientTokens',
   'sendIntraSyncMessage',
   'resetAllConnections',
-  'pong'
+  'pong',
+  'setIsCentral'
 ]
 export const events = [
   'onNewAuthorizationRequest',

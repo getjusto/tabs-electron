@@ -3,6 +3,8 @@ import Main from '..'
 
 const wss = new WebSocketServer({port: 2162})
 
+let isCentral = false
+
 interface Connection {
   token: string
   ws: WebSocket
@@ -18,7 +20,7 @@ wss.on('connection', ws => {
     if (token) {
       console.log(`Closing ws connection with token ${token}`)
       connections.delete(token)
-      Main.mainWindow.webContents.send(`intraSync:onConnectionClosed`, token)
+      Main.mainWindow?.webContents?.send(`intraSync:onConnectionClosed`, token)
     } else {
       console.log(`Closing ws connection without token`)
     }
@@ -35,13 +37,13 @@ wss.on('connection', ws => {
         authenticated: false
       })
       console.log(`Set token for ws connection to ${token}`)
-      Main.mainWindow.webContents.send(`intraSync:onNewConnection`, token)
+      Main.mainWindow?.webContents?.send(`intraSync:onNewConnection`, token)
     }
     if (data.type === 'ping') {
-      Main.mainWindow.webContents.send(`intraSync:onPing`, token)
+      Main.mainWindow?.webContents?.send(`intraSync:onPing`, token)
     }
     if (data.type === 'intraSyncMessage') {
-      Main.mainWindow.webContents.send(`intraSync:onIntraSyncMessage`, {
+      Main.mainWindow?.webContents?.send(`intraSync:onIntraSyncMessage`, {
         token,
         data: data.data
       })
@@ -56,6 +58,10 @@ wss.on('connection', ws => {
       ws.close(1000, 'unauthorized')
     }
   }, 5000)
+
+  if (!isCentral) {
+    ws.close(1000, 'notCentral')
+  }
 })
 
 export function acceptConnection(token: string) {
@@ -97,4 +103,8 @@ export function sendIntraSyncMessage(token: string, data: any) {
 export function resetAllConnections() {
   console.log(`Resetting all ws connections`)
   connections.forEach(connection => connection.ws.close(1000, 'reset'))
+}
+
+export function setIsCentral(is: boolean) {
+  isCentral = is
 }

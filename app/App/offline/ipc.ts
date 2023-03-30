@@ -8,7 +8,8 @@ import {
   pong,
   rejectConnection,
   resetAllConnections,
-  sendIntraSyncMessage
+  sendIntraSyncMessage,
+  setIsCentral
 } from './ws'
 
 export interface IntraSyncAPI {
@@ -22,6 +23,7 @@ export interface IntraSyncAPI {
   pong: (token: string) => void
   sendIntraSyncMessage: (token: string, data: any) => void
   resetAllConnections: () => void // when app starts, all connections are reset
+  setIsCentral: (isCentral: boolean) => void // when app starts, all connections are reset
 
   onPing: (callback: (token: string) => void) => void
   onNewConnection: (callback: (token: string) => void) => void
@@ -38,6 +40,7 @@ export function registerIntraSync() {
   handleEvent('sendIntraSyncMessage', sendIntraSyncMessage)
   handleEvent('resetAllConnections', resetAllConnections)
   handleEvent('pong', pong)
+  handleEvent('setIsCentral', setIsCentral)
 }
 
 function handleEvent(eventName: string, handler: (...args: any[]) => any) {
