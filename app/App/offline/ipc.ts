@@ -11,6 +11,7 @@ import {
   sendIntraSyncMessage,
   setIsCentral
 } from './ws'
+import {setCertificates} from './certs'
 
 export interface IntraSyncAPI {
   getDeviceIP: () => Promise<string>
@@ -24,11 +25,13 @@ export interface IntraSyncAPI {
   sendIntraSyncMessage: (token: string, data: any) => void
   resetAllConnections: () => void // when app starts, all connections are reset
   setIsCentral: (isCentral: boolean) => void // when app starts, all connections are reset
+  setCertificates: (certificates: {key: string; crt: string; cacrt: string}) => void
 
   onPing: (callback: (token: string) => void) => void
   onNewConnection: (callback: (token: string) => void) => void
   onConnectionClosed: (callback: (token: string) => void) => void
   onIntraSyncMessage: (callback: (params: {token: string; data: any}) => void) => void
+  onRequestNewCertificates: (callback: (ip: string) => void) => void
 }
 
 export function registerIntraSync() {
@@ -41,10 +44,10 @@ export function registerIntraSync() {
   handleEvent('resetAllConnections', resetAllConnections)
   handleEvent('pong', pong)
   handleEvent('setIsCentral', setIsCentral)
+  handleEvent('setCertificates', setCertificates)
 }
 
 function handleEvent(eventName: string, handler: (...args: any[]) => any) {
-  console.log(`Registering handler for ${eventName}`)
   ipcMain.handle(`intraSync:${eventName}`, async (event, ...args) => {
     console.log(`Received ${eventName} event`, ...args)
     if (!validateSender(event.senderFrame)) return null

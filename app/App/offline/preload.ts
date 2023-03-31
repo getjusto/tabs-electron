@@ -9,14 +9,16 @@ export const methods = [
   'sendIntraSyncMessage',
   'resetAllConnections',
   'pong',
-  'setIsCentral'
+  'setIsCentral',
+  'setCertificates'
 ]
 export const events = [
   'onNewAuthorizationRequest',
   'onNewConnection',
   'onConnectionClosed',
   'onPing',
-  'onIntraSyncMessage'
+  'onIntraSyncMessage',
+  'onRequestNewCertificates'
 ]
 
 const exposeObj = {}

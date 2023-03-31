@@ -6,6 +6,7 @@ import {baseURL, browserWindowConfig, isMac} from '../env'
 import {registerIntraSync} from './offline/ipc'
 
 import './offline'
+import {checkCertsAndStartServer} from './offline/certs'
 
 const store = new ElectronStore()
 
@@ -54,6 +55,7 @@ export default class Main {
   private static onReady() {
     Main.createWindow()
     registerIntraSync()
+    checkCertsAndStartServer()
   }
 
   private static createWindow() {

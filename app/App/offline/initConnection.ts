@@ -3,6 +3,7 @@ import cors from 'cors'
 import {v4 as uuidv4} from 'uuid'
 import bodyParser from 'body-parser'
 import Main from '..'
+import https from 'https'
 
 const app = express()
 const port = 2163
@@ -46,10 +47,6 @@ app.post('/test-connection', (req, res) => {
   res.end(JSON.stringify({success: true}))
 })
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
-
 export function respondToRequest(token: string, status: 'accepted' | 'rejected') {
   console.log({
     token,
@@ -65,4 +62,25 @@ function sendAuthorizationRequestToMaster(request: AuthorizationRequest) {
   console.log('Sending request to master')
   console.log(request)
   Main.mainWindow.webContents.send(`intraSync:onNewAuthorizationRequest`, request)
+}
+
+let httpsServer: https.Server
+export async function restartServer({key, crt, cacrt}) {
+  const credentials = {
+    key: key,
+    cert: crt,
+    ca: cacrt
+  }
+
+  if (httpsServer) {
+    console.log('Closing server')
+    httpsServer.close()
+  }
+
+  // Create an HTTPS server with the provided credentials and express app
+  httpsServer = https.createServer(credentials, app)
+
+  httpsServer.listen(port, () => {
+    console.log(`Crisp IntraSync app listening on port ${port}`)
+  })
 }
