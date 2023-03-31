@@ -6,8 +6,22 @@ import {restartWebsocket} from './ws'
 
 const store = new ElectronStore()
 
-function areCertsValid({crt, key, cacrt, ip}) {
-  return crt && key
+function areCertsValid(ip: string) {
+  const crt = store.get('intrasync.cert.crt') as string
+  const key = store.get('intrasync.cert.key') as string
+  const certIp = store.get('intrasync.cert.ip') as string
+  const date = store.get('intrasync.cert.createdAt') as string
+
+  if (certIp !== ip) return false
+
+  const now = new Date()
+  const diff = now.getTime() - new Date(date).getTime()
+  const diffDays = Math.ceil(diff / (1000 * 3600 * 24))
+  if (diffDays > 30) return false
+
+  if (!crt || !key) return false
+
+  return true
 }
 
 function restartServers({crt, key, cacrt}) {
@@ -26,7 +40,8 @@ export async function checkCertsAndStartServer() {
   const cacrt = store.get('intrasync.ca.crt') as string
   const key = store.get('intrasync.cert.key') as string
 
-  if (!areCertsValid({crt, key, cacrt, ip})) {
+  console.log('are certs valid', areCertsValid(ip))
+  if (!areCertsValid(ip)) {
     requestNewCertificates(ip)
   } else {
     restartServers({crt, key, cacrt})
@@ -46,12 +61,14 @@ export async function requestNewCertificates(ip: string) {
   }, 10000)
 }
 
-export async function setCertificates({crt, key, cacrt}) {
+export async function setCertificates({crt, key, cacrt, ip}) {
   receivedCertificates = true
 
   store.set('intrasync.cert.crt', crt)
   store.set('intrasync.cert.key', key)
   store.set('intrasync.ca.crt', cacrt)
+  store.set('intrasync.cert.ip', ip)
+  store.set('intrasync.cert.createdAt', new Date())
 
   restartServers({
     crt,

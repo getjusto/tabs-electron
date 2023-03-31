@@ -25,7 +25,7 @@ export interface IntraSyncAPI {
   sendIntraSyncMessage: (token: string, data: any) => void
   resetAllConnections: () => void // when app starts, all connections are reset
   setIsCentral: (isCentral: boolean) => void // when app starts, all connections are reset
-  setCertificates: (certificates: {key: string; crt: string; cacrt: string}) => void
+  setCertificates: (certificates: {key: string; crt: string; cacrt: string; ip: string}) => void
 
   onPing: (callback: (token: string) => void) => void
   onNewConnection: (callback: (token: string) => void) => void
