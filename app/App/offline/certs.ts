@@ -2,11 +2,21 @@ import ElectronStore from 'electron-store'
 import Main from '..'
 import {restartServer} from './initConnection'
 import {getDeviceIP} from './ip'
+import {restartWebsocket} from './ws'
 
 const store = new ElectronStore()
 
 function areCertsValid({crt, key, cacrt, ip}) {
   return crt && key
+}
+
+function restartServers({crt, key, cacrt}) {
+  restartWebsocket({crt, key, cacrt})
+  restartServer({
+    crt,
+    key,
+    cacrt
+  })
 }
 
 export async function checkCertsAndStartServer() {
@@ -19,11 +29,7 @@ export async function checkCertsAndStartServer() {
   if (!areCertsValid({crt, key, cacrt, ip})) {
     requestNewCertificates(ip)
   } else {
-    restartServer({
-      crt,
-      key,
-      cacrt
-    })
+    restartServers({crt, key, cacrt})
   }
 }
 
@@ -47,7 +53,7 @@ export async function setCertificates({crt, key, cacrt}) {
   store.set('intrasync.cert.key', key)
   store.set('intrasync.ca.crt', cacrt)
 
-  restartServer({
+  restartServers({
     crt,
     key,
     cacrt
