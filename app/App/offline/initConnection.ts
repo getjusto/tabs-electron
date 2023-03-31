@@ -21,6 +21,10 @@ export interface AuthorizationRequest {
 
 export const pendingRequests: AuthorizationRequest[] = []
 
+app.get('/', (req, res) => {
+  res.end(`OK`)
+})
+
 app.post('/init', (req, res) => {
   const params = req.body
   const token = uuidv4()
