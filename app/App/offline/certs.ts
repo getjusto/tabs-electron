@@ -17,7 +17,7 @@ function areCertsValid(ip: string) {
   const now = new Date()
   const diff = now.getTime() - new Date(date).getTime()
   const diffDays = Math.ceil(diff / (1000 * 3600 * 24))
-  if (diffDays > 30) return false
+  if (diffDays > 300) return false
 
   if (!crt || !key) return false
 
