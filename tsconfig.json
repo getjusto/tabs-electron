@@ -10,16 +10,16 @@
     "removeComments": true,
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
-    "incremental": true,
+    "incremental": false,
     "noImplicitAny": false,
     "skipLibCheck": true,
     "typeRoots": ["./node_modules/@types"],
-    "outDir": "./.build",
+    "outDir": "./compiled",
     "rootDir": "./app",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "lib": ["es2020", "dom"],
     "allowSyntheticDefaultImports": true
   },
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist", "./compiled"]
 }

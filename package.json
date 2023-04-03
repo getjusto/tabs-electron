@@ -1,15 +1,15 @@
 {
   "name": "justo-crisp",
-  "version": "0.2.3",
+  "version": "0.2.6",
   "license": "MIT",
   "description": "Crisp POS",
   "author": "nicolaslopezj",
-  "main": "./.build/index.js",
+  "main": "./compiled/index.js",
   "repository": "https://github.com/getjusto/tabs-electron",
   "scripts": {
     "build": "tsc",
     "postinstall": "electron-builder install-app-deps",
-    "start": "yarn build && JUSTO_ENV=local electron ./.build",
+    "start": "yarn build && JUSTO_ENV=local electron ./compiled",
     "pack": "yarn build && electron-builder --dir",
     "release": "yarn build && electron-builder --win --mac"
   },
@@ -31,6 +31,11 @@
       ],
       "target": "nsis",
       "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true
     }
   },
   "dependencies": {

@@ -4,6 +4,6 @@ node_modules
 build.sh
 cert.p12
 dist/
-.build/
+compiled/
 tsconfig.tsbuildinfo
 notarization-error.log
