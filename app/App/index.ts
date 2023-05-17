@@ -64,6 +64,9 @@ export default class Main {
     Main.mainWindow.on('closed', Main.onClosed)
     Main.mainWindow.once('ready-to-show', Main.onReadyToShow)
 
+    // disable background throttling
+    Main.mainWindow.webContents.setBackgroundThrottling(false)
+
     const latestURL = (store.get('latestURL') || '') as string
     const initialURL = latestURL.startsWith(baseURL) ? latestURL : baseURL
 
