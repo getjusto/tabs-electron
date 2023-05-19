@@ -1,6 +1,6 @@
 {
   "name": "justo-crisp",
-  "version": "0.2.9",
+  "version": "0.3.0",
   "license": "MIT",
   "description": "Crisp POS",
   "author": "nicolaslopezj",
@@ -10,49 +10,8 @@
     "build": "tsc",
     "postinstall": "electron-builder install-app-deps",
     "start": "yarn build && JUSTO_ENV=local electron ./compiled",
-    "pack": "yarn build && electron-builder --dir",
-    "release": "yarn build && electron-builder --win --mac"
-  },
-  "build": {
-    "productName": "Crisp",
-    "appId": "com.getjusto.crisp",
-    "afterSign": "electron-builder-notarize",
-    "mac": {
-      "hardenedRuntime": true,
-      "entitlements": "./node_modules/electron-builder-notarize/entitlements.mac.inherit.plist",
-      "target": [
-        {
-          "target": "dmg",
-          "arch": [
-            "arm64",
-            "x64"
-          ]
-        },
-        {
-          "target": "zip",
-          "arch": [
-            "arm64",
-            "x64"
-          ]
-        }
-      ]
-    },
-    "dmg": {
-      "icon": "build/icon.icns",
-      "internetEnabled": true
-    },
-    "win": {
-      "publish": [
-        "github"
-      ],
-      "target": "nsis",
-      "icon": "build/icon.ico"
-    },
-    "nsis": {
-      "oneClick": false,
-      "perMachine": true,
-      "allowToChangeInstallationDirectory": true
-    }
+    "pack": "yarn build && electron-builder --config .electron-builder.config.js --dir",
+    "release": "rf -rf ./dist && yarn build && electron-builder --config .electron-builder.config.js --win --mac"
   },
   "dependencies": {
     "bufferutil": "^4.0.7",
