@@ -1,6 +1,6 @@
 {
   "name": "justo-crisp",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "license": "MIT",
   "description": "Crisp POS",
   "author": "nicolaslopezj",
@@ -11,13 +11,14 @@
     "postinstall": "electron-builder install-app-deps",
     "start": "yarn build && JUSTO_ENV=local electron ./compiled",
     "pack": "yarn build && electron-builder --config .electron-builder.config.js --dir",
-    "release": "rf -rf ./dist && yarn build && electron-builder --config .electron-builder.config.js --win --mac"
+    "release": "rm -rf ./dist && yarn build && electron-builder --config .electron-builder.config.js --win --mac"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
     "bufferutil": "^4.0.7",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
+    "easy-auto-launch": "^6.0.2",
     "electron-store": "^8.1.0",
     "electron-updater": "^5.3.0",
     "express": "^4.18.2",
