@@ -1,3 +1,4 @@
+import './handleErrors'
 import {app, BrowserWindow} from 'electron'
 import App from './App'
 import './autolaunch'
