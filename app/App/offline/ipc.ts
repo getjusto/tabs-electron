@@ -12,9 +12,11 @@ import {
   setIsCentral
 } from './ws'
 import {setCertificates} from './certs'
+import {restartPrintManager} from '../print/restartPrintManager'
 
 export interface IntraSyncAPI {
   getDeviceIP: () => Promise<string>
+  restartPrintManager: () => Promise<{success: boolean; message: string}>
   respondToRequest: (token: string, status: 'accepted' | 'rejected') => void
   onNewAuthorizationRequest: (callback: (request: AuthorizationRequest) => void) => void
 
@@ -36,6 +38,7 @@ export interface IntraSyncAPI {
 
 export function registerIntraSync() {
   handleEvent('getDeviceIP', getDeviceIP)
+  handleEvent('restartPrintManager', restartPrintManager)
   handleEvent('respondToRequest', respondToRequest)
   handleEvent('acceptConnection', acceptConnection)
   handleEvent('rejectConnection', rejectConnection)
