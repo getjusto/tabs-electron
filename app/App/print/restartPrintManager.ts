@@ -3,9 +3,39 @@ import {exec} from 'child_process'
 import tcpPortUsed from 'tcp-port-used'
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+const isMac = process.platform === 'darwin'
+
+export function fileExists(): Promise<boolean> {
+  return new Promise(resolve => {
+    if (isMac) {
+      // check if file exists in mac
+      exec('ls "/Applications/JSPrintManager5.app"', error => {
+        console.log('error', error)
+        if (error) {
+          resolve(false)
+        } else {
+          resolve(true)
+        }
+      })
+    } else {
+      exec(
+        'dir "C:\\Program Files (x86)\\Neodynamic\\jspm for Windows\\v5.0\\jspm5.exe"',
+        error => {
+          if (error) {
+            resolve(false)
+          } else {
+            resolve(true)
+          }
+        }
+      )
+    }
+  })
+}
 
 export async function restartPrintManager(): Promise<{success: boolean; message: string}> {
   try {
+    if (!(await fileExists())) return {success: false, message: 'noPrintManager'}
+
     let processes = [...(await find('name', 'jspm')), ...(await find('port', 25443))]
     // uniq by pid
     processes = processes.filter(
@@ -24,12 +54,11 @@ export async function restartPrintManager(): Promise<{success: boolean; message:
         await tcpPortUsed.waitUntilFree(25443, 500, 30000)
         await sleep(20000)
       } catch (error) {
-        messages.push(`No se pudo cerrar el proceso ${proc.pid}`)
+        messages.push(`No se pudo cerrar el proceso ${proc.pid}. ${error.message}`)
       }
     }
 
     // open the same app again
-    const isMac = process.platform === 'darwin'
     if (isMac) {
       exec('open -a "/Applications/JSPrintManager5.app"')
       messages.push(`Se abrió la aplicación JSPrintManager5.app`)
