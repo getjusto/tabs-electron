@@ -3,6 +3,8 @@ import {contextBridge, ipcRenderer} from 'electron'
 export const methods = [
   'respondToRequest',
   'getDeviceIP',
+  'getAppVersion',
+  'checkForUpdates',
   'restartPrintManager',
   'acceptConnection',
   'rejectConnection',

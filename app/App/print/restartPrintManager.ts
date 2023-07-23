@@ -1,6 +1,7 @@
 import find from 'find-process'
 import {exec} from 'child_process'
 import tcpPortUsed from 'tcp-port-used'
+import {killProcess} from './killProcess'
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 const isMac = process.platform === 'darwin'
@@ -47,12 +48,9 @@ export async function restartPrintManager(): Promise<{success: boolean; message:
 
     for (const proc of processes) {
       try {
-        // force quit the process
-        const signal = 'SIGKILL'
-        process.kill(proc.pid, signal)
-        messages.push(`Se ha cerrado el proceso`)
-        await tcpPortUsed.waitUntilFree(25443, 500, 30000)
-        await sleep(20000)
+        // open the same app again
+        const result = await killProcess(proc.pid)
+        messages.push(result)
       } catch (error) {
         messages.push(`No se pudo cerrar el proceso ${proc.pid}. ${error.message}`)
       }
@@ -67,7 +65,9 @@ export async function restartPrintManager(): Promise<{success: boolean; message:
       messages.push(`Se abrió la aplicación JSPrintManager5.exe`)
     }
 
-    await sleep(10000)
+    try {
+      await tcpPortUsed.waitUntilUsed(25443, 500, 15000)
+    } catch {}
 
     processes = [...(await find('name', 'jspm')), ...(await find('port', 25443))]
 

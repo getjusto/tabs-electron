@@ -13,9 +13,12 @@ import {
 } from './ws'
 import {setCertificates} from './certs'
 import {restartPrintManager} from '../print/restartPrintManager'
+import {checkForUpdates, getAppVersion} from '../lifecycle'
 
 export interface IntraSyncAPI {
   getDeviceIP: () => Promise<string>
+  getAppVersion: () => Promise<string>
+  checkForUpdates: () => Promise<any>
   restartPrintManager: () => Promise<{success: boolean; message: string}>
   respondToRequest: (token: string, status: 'accepted' | 'rejected') => void
   onNewAuthorizationRequest: (callback: (request: AuthorizationRequest) => void) => void
@@ -38,6 +41,8 @@ export interface IntraSyncAPI {
 
 export function registerIntraSync() {
   handleEvent('getDeviceIP', getDeviceIP)
+  handleEvent('getAppVersion', getAppVersion)
+  handleEvent('checkForUpdates', checkForUpdates)
   handleEvent('restartPrintManager', restartPrintManager)
   handleEvent('respondToRequest', respondToRequest)
   handleEvent('acceptConnection', acceptConnection)
