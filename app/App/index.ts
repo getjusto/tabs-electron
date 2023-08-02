@@ -1,7 +1,6 @@
-import {BrowserWindow, powerSaveBlocker} from 'electron'
+import {BrowserWindow, dialog, powerSaveBlocker} from 'electron'
 import ElectronStore from 'electron-store'
 import {autoUpdater} from 'electron-updater'
-
 import {baseURL, browserWindowConfig, isMac} from '../env'
 import {registerIntraSync} from './offline/ipc'
 
@@ -36,7 +35,15 @@ export default class Main {
     }
   }
 
-  private static onClose() {
+  private static onClose(e: Electron.Event) {
+    const choice = dialog.showMessageBoxSync(Main.mainWindow, {
+      type: 'question',
+      buttons: ['Yes', 'No'],
+      title: 'Confirma tus acciones',
+      message: '¿Realmente quieres cerrar la aplicación?'
+    })
+    if (choice > 0) e.preventDefault()
+
     const latestURL = Main.mainWindow.webContents.getURL()
     // save latestURL in local storage
     if (latestURL.startsWith(baseURL)) {
