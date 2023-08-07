@@ -1,4 +1,7 @@
-import sudo from 'sudo-prompt'
+import {digitalCertificate} from './digital-certificate'
+import {sudoPromise} from './sudoPromise'
+import fs from 'fs'
+import os from 'os'
 
 const isMac = process.platform === 'darwin'
 
@@ -9,16 +12,8 @@ export async function installQZTray(): Promise<{success: boolean; message: strin
       win: `powershell -Command "irm pwsh.sh | iex"`
     }[isMac ? 'mac' : 'win']
 
-    await new Promise<void>((resolve, reject) => {
-      sudo.exec(script, {name: 'Crisp'}, function (error, stdout, stderr) {
-        if (error) {
-          console.error(`Error installing qztray: ${error}`, stdout, stderr)
-          reject(`Error: ${error.message}`)
-        } else {
-          resolve()
-        }
-      })
-    })
+    await sudoPromise(script)
+    await installCertificate()
 
     return {
       success: true,
@@ -30,4 +25,17 @@ export async function installQZTray(): Promise<{success: boolean; message: strin
       message: error.message
     }
   }
+}
+
+async function installCertificate() {
+  // write the file to a temp folder
+  const path = os.tmpdir() + '/digital-certificate.txt'
+  fs.writeFileSync(path, digitalCertificate)
+
+  const script = {
+    mac: `"/Applications/QZ Tray.app/Contents/MacOS/QZ Tray" --whitelist "${path}"`,
+    win: `"%PROGRAMFILES%\\QZ Tray\\qz-tray-console.exe" --whitelist "${path}"`
+  }[isMac ? 'mac' : 'win']
+
+  await sudoPromise(script)
 }
