@@ -6,7 +6,7 @@ export async function installQZTray(): Promise<{success: boolean; message: strin
   try {
     const script = {
       mac: 'curl qz.sh | bash',
-      win: 'irm pwsh.sh | iex'
+      win: `powershell -Command "irm pwsh.sh | iex"`
     }[isMac ? 'mac' : 'win']
 
     await new Promise<void>((resolve, reject) => {

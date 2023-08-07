@@ -6,7 +6,11 @@ export const methods = [
   'getAppVersion',
   'checkForUpdates',
   'restartPrintManager',
+  // QZ
   'installQZTray',
+  'getQZDigitalCertificate',
+  'getQZSignature',
+  // Intrasync
   'acceptConnection',
   'rejectConnection',
   'getConnectedClientTokens',

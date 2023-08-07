@@ -15,16 +15,22 @@ import {setCertificates} from './certs'
 import {restartPrintManager} from '../print/restartPrintManager'
 import {checkForUpdates, getAppVersion} from '../lifecycle'
 import {installQZTray} from '../qztray/install'
+import {getQZDigitalCertificate, getQZSignature} from '../qztray/ipc'
 
 export interface IntraSyncAPI {
   getDeviceIP: () => Promise<string>
   getAppVersion: () => Promise<string>
   checkForUpdates: () => Promise<any>
   restartPrintManager: () => Promise<{success: boolean; message: string}>
-  installQZTray: () => Promise<{success: boolean; message: string}>
   respondToRequest: (token: string, status: 'accepted' | 'rejected') => void
   onNewAuthorizationRequest: (callback: (request: AuthorizationRequest) => void) => void
 
+  // QZ
+  installQZTray: () => Promise<{success: boolean; message: string}>
+  getQZDigitalCertificate: () => Promise<string>
+  getQZSignature: (toSign: string) => Promise<string>
+
+  // Intrasync
   acceptConnection: (token: string) => void
   rejectConnection: (token: string) => void
   getConnectedClientTokens: () => Promise<string[]>
@@ -47,6 +53,8 @@ export function registerIntraSync() {
   handleEvent('checkForUpdates', checkForUpdates)
   handleEvent('restartPrintManager', restartPrintManager)
   handleEvent('installQZTray', installQZTray)
+  handleEvent('getQZDigitalCertificate', getQZDigitalCertificate)
+  handleEvent('getQZSignature', getQZSignature)
   handleEvent('respondToRequest', respondToRequest)
   handleEvent('acceptConnection', acceptConnection)
   handleEvent('rejectConnection', rejectConnection)
