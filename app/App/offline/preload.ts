@@ -6,6 +6,7 @@ export const methods = [
   'getAppVersion',
   'checkForUpdates',
   'restartPrintManager',
+  'installQZTray',
   'acceptConnection',
   'rejectConnection',
   'getConnectedClientTokens',
