@@ -1,3 +1,4 @@
+// NO se usa, se hace desde la web
 import {digitalCertificate} from './keys/digital-certificate'
 import {privateKey} from './keys/private-key'
 import crypto from 'crypto'
