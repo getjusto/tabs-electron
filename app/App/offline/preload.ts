@@ -10,6 +10,7 @@ export const methods = [
   'installQZTray',
   'getQZDigitalCertificate',
   'getQZSignature',
+  'openQZTray',
   // Intrasync
   'acceptConnection',
   'rejectConnection',
