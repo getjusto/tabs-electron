@@ -3,6 +3,7 @@ import ElectronStore from 'electron-store'
 import {autoUpdater} from 'electron-updater'
 import {baseURL, browserWindowConfig, isMac} from '../env'
 import {registerIntraSync} from './offline/ipc'
+import {shell} from 'electron'
 
 import './offline'
 import {checkCertsAndStartServer} from './offline/certs'
@@ -73,6 +74,12 @@ export default class Main {
 
     // disable background throttling
     Main.mainWindow.webContents.setBackgroundThrottling(false)
+
+    // make links open in default browser
+    Main.mainWindow.webContents.setWindowOpenHandler(({url}) => {
+      shell.openExternal(url)
+      return {action: 'deny'}
+    })
 
     const latestURL = (store.get('latestURL') || '') as string
     const initialURL = latestURL.startsWith(baseURL) ? latestURL : baseURL
