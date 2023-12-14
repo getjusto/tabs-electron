@@ -35,6 +35,9 @@ module.exports = async function () {
     win: {
       publish: ['github'],
       icon: 'build/icon.ico',
+      signingHashAlgorithms: ['sha256'],
+      sign: './scripts/sign.js',
+      artifactName: `Crisp-Setup-v${process.env.npm_package_version}.exe`,
       target: [
         {
           target: 'nsis',
