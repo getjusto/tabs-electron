@@ -13,7 +13,7 @@ import {
 } from './ws'
 import {setCertificates} from './certs'
 import {restartPrintManager} from '../print/restartPrintManager'
-import {checkForUpdates, getAppVersion} from '../lifecycle'
+import {checkForUpdates, getAppVersion, setKiosk} from '../lifecycle'
 import {installQZTray} from '../qztray/install'
 import {getQZDigitalCertificate, getQZSignature} from '../qztray/ipc'
 import {openQZTray} from '../qztray/open'
@@ -25,6 +25,9 @@ export interface IntraSyncAPI {
   restartPrintManager: () => Promise<{success: boolean; message: string}>
   respondToRequest: (token: string, status: 'accepted' | 'rejected') => void
   onNewAuthorizationRequest: (callback: (request: AuthorizationRequest) => void) => void
+
+  // Kiosk mode
+  setKiosk: (flag: boolean) => void
 
   // QZ
   installQZTray: () => Promise<{success: boolean; message: string}>
@@ -50,6 +53,7 @@ export interface IntraSyncAPI {
 }
 
 export function registerIntraSync() {
+  handleEvent('setKiosk', setKiosk)
   handleEvent('getDeviceIP', getDeviceIP)
   handleEvent('getAppVersion', getAppVersion)
   handleEvent('checkForUpdates', checkForUpdates)

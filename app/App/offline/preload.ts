@@ -6,6 +6,8 @@ export const methods = [
   'getAppVersion',
   'checkForUpdates',
   'restartPrintManager',
+  // Kiosk mode
+  'setKiosk',
   // QZ
   'installQZTray',
   'getQZDigitalCertificate',
