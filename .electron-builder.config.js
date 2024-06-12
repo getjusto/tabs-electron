@@ -2,11 +2,12 @@
  * @type {() => import('electron-builder').Configuration}
  * @see https://www.electron.build/configuration/configurtagation
  */
+
 module.exports = async function () {
   return {
     productName: 'Crisp',
     appId: 'com.getjusto.crisp',
-    afterSign: 'electron-builder-notarize',
+    // afterSign: './scripts/notarize.js',
     directories: {
       output: 'dist',
       buildResources: 'build'
@@ -30,7 +31,10 @@ module.exports = async function () {
           target: 'zip',
           arch: ['arm64', 'x64']
         }
-      ]
+      ],
+      notarize: {
+        teamId: process.env.APPLE_TEAM_ID
+      }
     },
     win: {
       publish: ['github'],
