@@ -12,7 +12,7 @@
     "start": "yarn build && JUSTO_ENV=local electron ./compiled",
     "pack": "yarn build && electron-builder --config .electron-builder.config.js --dir",
     "build-win": "rm -rf ./dist && yarn build && electron-builder --config .electron-builder.config.js --win",
-    "release": "rm -rf ./dist && yarn build && electron-builder --config .electron-builder.config.js --win --mac"
+    "release": "rm -rf ./dist && yarn build && electron-builder --config .electron-builder.config.js --mac"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
