@@ -7,3 +7,4 @@ dist/
 compiled/
 tsconfig.tsbuildinfo
 notarization-error.log
+build-win.sh

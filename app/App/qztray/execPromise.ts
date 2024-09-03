@@ -1,7 +1,7 @@
 import {exec} from 'child_process'
 
 export async function execPromise(script: string) {
-  await new Promise<string>((resolve, reject) => {
+  return await new Promise<string>((resolve, reject) => {
     console.log(`Will run exec promise: ${script}`)
     exec(script, (error, stdout, stderr) => {
       if (error) {
@@ -9,7 +9,7 @@ export async function execPromise(script: string) {
         reject(`Error: ${error.message}`)
       } else {
         console.log('Sudo promise success', {
-          stdout
+          stdout,
         })
         resolve(stdout.toString())
       }

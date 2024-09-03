@@ -12,13 +12,13 @@ autoLauncher.enable()
 
 autoLauncher
   .isEnabled()
-  .then(function (isEnabled) {
+  .then(isEnabled => {
     if (isEnabled) {
       return
     }
     autoLauncher.enable()
   })
-  .catch(function (err) {
+  .catch(err => {
     // handle error
     console.error(err)
   })

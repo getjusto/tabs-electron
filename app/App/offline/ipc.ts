@@ -9,7 +9,7 @@ import {
   rejectConnection,
   resetAllConnections,
   sendIntraSyncMessage,
-  setIsCentral
+  setIsCentral,
 } from './ws'
 import {setCertificates} from './certs'
 import {restartPrintManager} from '../print/restartPrintManager'
@@ -17,6 +17,7 @@ import {checkForUpdates, getAppVersion, setKiosk} from '../lifecycle'
 import {installQZTray} from '../qztray/install'
 import {getQZDigitalCertificate, getQZSignature} from '../qztray/ipc'
 import {openQZTray} from '../qztray/open'
+import {initRustdesk} from '../initRustdesk'
 
 export interface IntraSyncAPI {
   getDeviceIP: () => Promise<string>
@@ -50,6 +51,9 @@ export interface IntraSyncAPI {
   onConnectionClosed: (callback: (token: string) => void) => void
   onIntraSyncMessage: (callback: (params: {token: string; data: any}) => void) => void
   onRequestNewCertificates: (callback: (ip: string) => void) => void
+
+  // Rustdesk
+  initRustdesk: () => Promise<string>
 }
 
 export function registerIntraSync() {
@@ -71,6 +75,7 @@ export function registerIntraSync() {
   handleEvent('pong', pong)
   handleEvent('setIsCentral', setIsCentral)
   handleEvent('setCertificates', setCertificates)
+  handleEvent('initRustdesk', initRustdesk)
 }
 
 function handleEvent(eventName: string, handler: (...args: any[]) => any) {

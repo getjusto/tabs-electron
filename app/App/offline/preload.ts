@@ -21,7 +21,8 @@ export const methods = [
   'resetAllConnections',
   'pong',
   'setIsCentral',
-  'setCertificates'
+  'setCertificates',
+  'initRustdesk',
 ]
 export const events = [
   'onNewAuthorizationRequest',
@@ -29,7 +30,7 @@ export const events = [
   'onConnectionClosed',
   'onPing',
   'onIntraSyncMessage',
-  'onRequestNewCertificates'
+  'onRequestNewCertificates',
 ]
 
 const exposeObj = {}

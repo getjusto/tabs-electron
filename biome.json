@@ -21,7 +21,8 @@
       "complexity": {
         "noBannedTypes": "off",
         "noUselessTypeConstraint": "error",
-        "noForEach": "warn"
+        "noForEach": "warn",
+        "noStaticOnlyClass": "off"
       },
       "correctness": {
         "noPrecisionLoss": "error",

@@ -41,7 +41,7 @@ export default class Main {
       type: 'question',
       buttons: ['Yes', 'No'],
       title: 'Confirma tus acciones',
-      message: '¿Realmente quieres cerrar la aplicación?'
+      message: '¿Realmente quieres cerrar la aplicación?',
     })
     if (choice > 0) e.preventDefault()
 
