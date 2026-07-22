@@ -1,10 +1,10 @@
-// NO se usa, se hace desde la web
-import {digitalCertificate} from './digital-certificate'
-import {privateKey} from './keys/private-key'
 import crypto from 'node:crypto'
+import {getDigitalCertificate} from './getDigitalCertificate'
+import {privateKey} from './keys/private-key'
 
+// NO se usa, se hace desde la web
 export async function getQZDigitalCertificate() {
-  return digitalCertificate
+  return getDigitalCertificate()
 }
 
 // sign the string with the private key using sha512

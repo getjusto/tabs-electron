@@ -1,7 +1,8 @@
-import {digitalCertificate} from './digital-certificate'
+import fs from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
+import {getDigitalCertificate} from './getDigitalCertificate'
 import {sudoPromise} from './sudoPromise'
-import fs from 'fs'
-import os from 'os'
 
 const isMac = process.platform === 'darwin'
 
@@ -9,7 +10,7 @@ export async function installQZTray(): Promise<{success: boolean; message: strin
   try {
     const script = {
       mac: 'curl qz.sh | bash',
-      win: `powershell -Command "irm pwsh.sh | iex"`
+      win: `powershell -Command "irm pwsh.sh | iex"`,
     }[isMac ? 'mac' : 'win']
 
     await sudoPromise(script)
@@ -17,24 +18,26 @@ export async function installQZTray(): Promise<{success: boolean; message: strin
 
     return {
       success: true,
-      message: 'Se instaló con éxito'
+      message: 'Se instaló con éxito',
     }
   } catch (error) {
     return {
       success: false,
-      message: error.message
+      message: error.message,
     }
   }
 }
 
 async function installCertificate() {
+  const digitalCertificate = await getDigitalCertificate()
+
   // write the file to a temp folder
-  const path = os.tmpdir() + '/digital-certificate.txt'
-  fs.writeFileSync(path, digitalCertificate)
+  const certificatePath = path.join(os.tmpdir(), 'digital-certificate.txt')
+  fs.writeFileSync(certificatePath, digitalCertificate)
 
   const script = {
-    mac: `"/Applications/QZ Tray.app/Contents/MacOS/QZ Tray" --whitelist "${path}"`,
-    win: `"%PROGRAMFILES%\\QZ Tray\\qz-tray-console.exe" --whitelist "${path}"`
+    mac: `"/Applications/QZ Tray.app/Contents/MacOS/QZ Tray" --whitelist "${certificatePath}"`,
+    win: `"%PROGRAMFILES%\\QZ Tray\\qz-tray-console.exe" --whitelist "${certificatePath}"`,
   }[isMac ? 'mac' : 'win']
 
   await sudoPromise(script)
