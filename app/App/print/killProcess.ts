@@ -6,6 +6,9 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const isMac = process.platform === "darwin";
 
 export async function killProcess(processId: number): Promise<string> {
+	if (!Number.isSafeInteger(processId) || processId <= 0) {
+		throw new Error(`Invalid process ID: ${processId}`);
+	}
 	if (isMac) {
 		return killProcessMac(processId);
 	}
@@ -37,6 +40,7 @@ async function hasPrintJobsWindows() {
 			if (stdout.trim() !== "") {
 				console.log(stdout);
 				resolve(true);
+				return;
 			}
 			resolve(false);
 		});
@@ -77,7 +81,7 @@ async function killProcessWindows(processId: number) {
 					},
 					(error, stdout, stderr) => {
 						if (error) {
-							console.error(`Error killing with sudo: ${err}`, stdout, stderr);
+							console.error(`Error killing with sudo: ${error}`, stdout, stderr);
 							reject(`Error: ${error.message}`);
 						} else {
 							resolve();

@@ -37,8 +37,18 @@ export function restartWebsocket({crt, key, cacrt}) {
     let token: string = null
     console.log(`Received new ws connection with id`)
 
+    const authTimeout = setTimeout(() => {
+      console.log(`Checking ws connection with token ${token}`)
+      const connection = token ? connections.get(token) : undefined
+      if (!connection || connection.ws !== ws || !connection.authenticated) {
+        console.log(`Closing ws connection with due to timeout`)
+        ws.close(1000, 'unauthorized')
+      }
+    }, 5000)
+
     ws.on('close', () => {
-      if (token) {
+      clearTimeout(authTimeout)
+      if (token && connections.get(token)?.ws === ws) {
         console.log(`Closing ws connection with token ${token}`)
         connections.delete(token)
         Main.mainWindow?.webContents?.send(`intraSync:onConnectionClosed`, token)
@@ -48,37 +58,50 @@ export function restartWebsocket({crt, key, cacrt}) {
     })
 
     ws.on('message', message => {
-      const data = JSON.parse(message.toString())
+      let data: any
+      try {
+        data = JSON.parse(message.toString())
+      } catch (err) {
+        console.warn('Ignoring invalid ws JSON message', err)
+        return
+      }
+      if (!data || typeof data !== 'object') {
+        return
+      }
+
       console.log(`Received message from ws connection`, data)
       if (data.type === 'auth') {
+        if (typeof data.token !== 'string' || data.token.length === 0) {
+          console.warn('Ignoring auth message without a valid token')
+          return
+        }
         token = data.token
         connections.set(token, {
           token,
           ws,
-          authenticated: false
+          authenticated: false,
         })
         console.log(`Set token for ws connection to ${token}`)
         Main.mainWindow?.webContents?.send(`intraSync:onNewConnection`, token)
+        return
       }
+
+      const connection = token ? connections.get(token) : undefined
+      if (!connection || connection.ws !== ws || !connection.authenticated) {
+        console.warn(`Ignoring ${data.type} message from unauthenticated ws connection`)
+        return
+      }
+
       if (data.type === 'ping') {
         Main.mainWindow?.webContents?.send(`intraSync:onPing`, token)
       }
       if (data.type === 'intraSyncMessage') {
         Main.mainWindow?.webContents?.send(`intraSync:onIntraSyncMessage`, {
           token,
-          data: data.data
+          data: data.data,
         })
       }
     })
-
-    setTimeout(() => {
-      console.log(`Checking ws connection with token ${token}`)
-      const connection = connections.get(token)
-      if (!connection?.authenticated) {
-        console.log(`Closing ws connection with due to timeout`)
-        ws.close(1000, 'unauthorized')
-      }
-    }, 5000)
 
     if (!isCentral) {
       ws.close(1000, 'notCentral')
@@ -87,14 +110,15 @@ export function restartWebsocket({crt, key, cacrt}) {
 }
 
 export function acceptConnection(token: string) {
-  const {ws} = connections.get(token)
-  if (ws) {
-    ws.send(JSON.stringify({type: 'accepted'}))
+  const connection = connections.get(token)
+  if (!connection) return
+  if (connection.ws.readyState === WebSocket.OPEN) {
+    connection.ws.send(JSON.stringify({type: 'accepted'}))
   }
   connections.set(token, {
     token,
-    ws,
-    authenticated: true
+    ws: connection.ws,
+    authenticated: true,
   })
 }
 
@@ -112,13 +136,17 @@ export function getConnectedClientTokens() {
 export function pong(token: string) {
   console.log(`Ponging ws connection with token ${token}`)
   const connection = connections.get(token)
-  if (!connection) return
+  if (!connection || !connection.authenticated || connection.ws.readyState !== WebSocket.OPEN) {
+    return
+  }
   connection.ws.send(JSON.stringify({type: 'pong'}))
 }
 
 export function sendIntraSyncMessage(token: string, data: any) {
   const connection = connections.get(token)
-  if (!connection) return
+  if (!connection || !connection.authenticated || connection.ws.readyState !== WebSocket.OPEN) {
+    return
+  }
   connection.ws.send(JSON.stringify({type: 'intraSyncMessage', data}))
 }
 
